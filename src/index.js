@@ -16,6 +16,12 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 
 class MyAppBar extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      pictures: [],
+    };
+  }
   render() {
     return (
       <MuiThemeProvider>
@@ -26,16 +32,31 @@ class MyAppBar extends React.Component {
           iconElementLeft={<CustomMenu/>}
           iconElementRight={<FlatButton label="Save" />}
         />
+      <div className="container2">
+        <div className="container1">
+          {this.state.pictures}
+        </div>
+      </div>
       </MuiThemeProvider>
     );
   }
 
 
-
   handleClick() {
-    alert('onClick triggered on the title component');
+     fetch('https://randomuser.me/api/?results=10')
+     .then(results => {
+       return results.json();
+     }).then(data => {
+       let pictures = data.results.map((pic) => {
+         return(
+           <div key={pic.email}>
+             <img src={pic.picture.medium}/>
+           </div>
+         )
+       })
+       this.setState({pictures: pictures});
+     })
   }
-
 }
 
 
