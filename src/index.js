@@ -13,13 +13,20 @@ import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 
-
-class MyAppBar extends React.Component {
+class MyApplication extends React.Component {
   constructor(){
     super();
     this.state = {
-      pictures: [],
+      tableData: [],
     };
   }
   render() {
@@ -27,14 +34,11 @@ class MyAppBar extends React.Component {
       <MuiThemeProvider>
         <AppBar className="appBar"
           title="My Application"
-          iconClassNameRight="muidocs-icon-navigation-expand-more"
-          onTitleClick={() => this.handleClick()}
-          iconElementLeft={<CustomMenu/>}
-          iconElementRight={<FlatButton label="Save" />}
+          onTitleClick={() => this.handleClick()}                    
         />
       <div className="container2">
         <div className="container1">
-          {this.state.pictures}
+          <UserTable value={this.state.tableData}/>
         </div>
       </div>
       </MuiThemeProvider>
@@ -47,20 +51,10 @@ class MyAppBar extends React.Component {
      .then(results => {
        return results.json();
      }).then(data => {
-       let pictures = data.results.map((pic) => {
-         return(
-           <div key={pic.email}>
-             <img src={pic.picture.medium}/>
-           </div>
-         )
-       })
-       this.setState({pictures: pictures});
+       this.setState({tableData: data.results});
      })
   }
 }
-
-
-
 
 class CustomMenu extends React.Component {
   render () {
@@ -82,27 +76,45 @@ class CustomMenu extends React.Component {
   }
 }
 
+class UserTable extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render(){
+    let tableData = this.props.value;
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHeaderColumn>Nr.</TableHeaderColumn>
+            <TableHeaderColumn>First name</TableHeaderColumn>
+            <TableHeaderColumn>Last name</TableHeaderColumn>
+            <TableHeaderColumn>E-Mail</TableHeaderColumn>
+            <TableHeaderColumn>Picture</TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tableData.map( (row, index) => (
+              <TableRow key={index}>
+                <TableRowColumn>{index}</TableRowColumn>
+                <TableRowColumn>{row.name.first}</TableRowColumn>
+                <TableRowColumn>{row.name.last}</TableRowColumn>
+                <TableRowColumn>{row.email}</TableRowColumn>
+                <TableRowColumn><img src={row.picture.medium}/></TableRowColumn>
+              </TableRow>
+              ))}
+        </TableBody>
+      </Table>
+    );
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 //////////////////////////////////////////////////////////
 ReactDOM.render(
-  <MyAppBar />,
+  <MyApplication />,
   document.getElementById('root')
 );
+
+
 registerServiceWorker();
